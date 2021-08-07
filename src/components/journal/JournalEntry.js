@@ -1,31 +1,43 @@
-import React from 'react'
+import React from 'react';
+import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { activeNote } from '../../actions/notes';
 
-export const JournalEntry = () => {
-    return (
-        <div className="journal__entry pointer">
-            
-            <div 
-                className="journal__entry-picture"
-                style={{
-                    backgroundSize: 'cover',
-                    backgroundImage: 'url(https://earthsky.org/upl/2018/12/comet-wirtanen-Jack-Fusco-dec-2018-Anza-Borrego-desert-CA-e1544613895713.jpg)'
-                }}
-            ></div>
+export const JournalEntry = ({ id, title, body, url, date }) => {
+	const dispatch = useDispatch();
+	const noteDate = moment(date);
 
-            <div className="journal__entry-body">
-                <p className="journal__entry-title">
-                    Un nuevo día
-                </p>
-                <p className="journal__entry-content">
-                    Reprehenderit id in duis consectetur deserunt veniam fugiat.
-                </p>
-            </div>
+	const handleEntry = () => {
+		dispatch(
+			activeNote(id, {
+				title,
+				body,
+				url,
+				date,
+			})
+		);
+	};
 
-            <div className="journal__entry-date-box">
-                <span>Monday</span>
-                <h4>28</h4>
-            </div>
+	return (
+		<div
+			className="journal__entry pointer animate__animated animate__fadeIn animate__faster"
+			onClick={handleEntry}
+		>
+			{url && (
+				<figure className="journal__entry-picture">
+					<img alt={title} className="journal__entry-img" src={`${url}`}></img>
+				</figure>
+			)}
 
-        </div>
-    )
-}
+			<div className="journal__entry-body">
+				<p className="journal__entry-title">{title}</p>
+				<p className="journal__entry-content">{body}</p>
+			</div>
+
+			<div className="journal__entry-date-box">
+				<span>{noteDate.format('dddd')}</span>
+				<h4>{noteDate.format('Do')}</h4>
+			</div>
+		</div>
+	);
+};
